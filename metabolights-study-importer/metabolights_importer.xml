@@ -1,0 +1,83 @@
+<tool id="metabolights_test_importer" name="MetaboLights Study Test Importer" version="0.1.0">
+    <command detect_errors="exit_code"><![CDATA[
+#if $aspera_download.use_aspera == 'true'
+    #if $aspera_download.aspera_password
+        export ASPERA_SCP_PASS="$aspera_download.aspera_password";
+    #else
+        export ASPERA_SCP_PASS="Xz68YfDe";
+    #end if
+
+    #set $ascp_path='which ascp || which ~/.aspera/cli/bin/ascp || echo "false"'
+    
+    #if $ascp_path == "false"
+        wget http://download.asperasoft.com/download/sw/cli/3.7.2/aspera-cli-3.7.2.354.010c3b8-linux-64-release.sh &&
+        bash aspera-cli-3.7.2.354.010c3b8-linux-64-release.sh &&
+        rm -r aspera-cli-3.7.2.354.010c3b8-linux-64-release.sh &&
+        PATH ~/.aspera/cli/bin:$PATH
+    #end if
+
+    #if $download_rawfiles
+        ascp -QT -l 1g -P 33001 fasp-ml@fasp.ebi.ac.uk:/studies/public/'$study_id' .;
+    #else
+        ascp -QT -l 1g -P 33001 -N "?_*.t*"  -E "*.*" fasp-ml@fasp.ebi.ac.uk:/studies/public/'$study_id' .;
+    #end if
+    mv '$study_id'/* .;
+    rm -r '$study_id'
+#else
+    #if $download_rawfiles
+        wget ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/*
+    #else
+        wget ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/i_*.txt ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/s_*.txt ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/a_*.txt ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/m_*.t*
+    #end if
+#end if
+
+]]></command>
+    <inputs>
+            <param name="study_id" value="MTBLS1" type="text" label="Public Study Identifier at MetaboLights" help="This should be obtained from the MetaboLights website. For public studies, Ex. MTBLS1, MTBLS2">
+                    <validator type="empty_field" />
+            </param>
+            <param name="download_rawfiles" type="boolean" checked="false" label="Download raw files" help="Please note downloading raw files may take a while due to large file size(s)" truevalue="true" falsevalue="false" />
+            <conditional name="aspera_download">
+                <param name="use_aspera" type="boolean" checked="false" label="Use ASPERA Download" help="High speed files download using aspera fasp protocol" truevalue="true" falsevalue="false" />
+                <when value="true">
+                    <param name="aspera_password" type="text" format="" label="ASPERA Password (optional)" />
+                </when>
+            </conditional>
+    </inputs>
+    <outputs>
+        <collection type="list" label="Assay File(s)" name="a_files">
+                <discover_datasets pattern="(?P&lt;designation&gt;a_.+)\.txt" format="tabular"/>
+          </collection>
+        <collection type="list" label="Sample File(s)" name="s_files">
+                <discover_datasets pattern="(?P&lt;designation&gt;s_.+)\.txt" format="tabular"/>
+        </collection>
+        <collection type="list" label="Metabolite Annotation File(s)" name="maf_files">
+                <discover_datasets pattern="(?P&lt;designation&gt;m_.+)\.tsv" format="tabular"/>
+        </collection>
+        <collection type="list" label="Raw File(s)" name="raw_files">
+                <discover_datasets pattern="(?P&lt;designation&gt;[^(m_|a_|s_|i_)].+)\.+" format="tabular"/>
+                <filter>download_rawfiles</filter>
+        </collection>
+        <data name="i_file" format="tabular" label="Investigation File" from_work_dir="i_Investigation.txt" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="study_id" value="MTBLS1"/>
+            <param name="download_rawfiles" value="true"/>
+            <output name="i_file" file="i_Investigation.txt" ftype="tabular" />
+            <output_collection name="a_files" type="list">
+                <discovered_dataset designation="a_mtbls1_metabolite_profiling_NMR_spectroscopy.txt" ftype="tabular"/>
+            </output_collection>
+            <output_collection name="raw_files" type="list">
+                <discovered_dataset designation="ADG10003u_007.nmrML" ftype="nmrML"/>
+            </output_collection>
+        </test>
+    </tests>
+    <help><![CDATA[
+**Overview**
+ A program to download MetaboLights study. 
+]]></help>
+    <citations>
+        <citation type="doi">10.1002/0471250953.bi1413s53</citation>
+    </citations>
+</tool>

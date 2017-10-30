@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<tool name="MetaboLights Study Test Browser" id="metabolights_test_browser" tool_type="data_source" version="0.1.0">
+    <command detect_errors="exit_code"><![CDATA[
+#if $download_rawfiles == 'true'
+    wget ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/*
+#else
+    wget ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/i_*.txt ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/s_*.txt ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/a_*.txt ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/m_*.t*
+#end if
+]]></command>
+    <inputs action="https://wwwdev.ebi.ac.uk/metabolights/studies" check_values="false" method="get">
+        <display>Go to MetaboLights Study Browser $GALAXY_URL</display>
+        <param name="GALAXY_URL" type="baseurl" value="/tool_runner" />
+        <param name="tool_id" type="hidden" value="metabolights_test_browser" />
+        <param name="sendToGalaxy" type="hidden" value="1" />
+    </inputs>
+    <request_param_translation>
+        <request_param galaxy_name="URL_method" remote_name="URL_method" missing="post" />
+        <request_param galaxy_name="URL" remote_name="URL" missing="" />
+        <request_param galaxy_name="study_id" remote_name="study_id" missing="?" />
+        <request_param galaxy_name="download_rawfiles" remote_name="download_rawfiles" missing="false" />
+    </request_param_translation>
+    <uihints minwidth="800"/>
+    <outputs>
+        <collection type="list" label="Assay File(s)" name="a_files">
+                <discover_datasets pattern="(?P&lt;designation&gt;a_.+)\.txt" format="tabular"/>
+          </collection>
+        <collection type="list" label="Sample File(s)" name="s_files">
+                <discover_datasets pattern="(?P&lt;designation&gt;s_.+)\.txt" format="tabular"/>
+        </collection>
+        <collection type="list" label="Metabolite Annotation File(s)" name="maf_files">
+                <discover_datasets pattern="(?P&lt;designation&gt;m_.+)\.tsv" format="tabular"/>
+        </collection>
+        <collection type="list" label="Raw File(s)" name="raw_files">
+                <discover_datasets pattern="(?P&lt;designation&gt;[^(m_|a_|s_|i_)].+)\.+" format="tabular"/>
+                <filter>download_rawfiles == 'true'</filter>
+        </collection>
+        <data name="i_file" format="tabular" label="Investigation File" from_work_dir="i_Investigation.txt" />
+    </outputs>
+</tool>
