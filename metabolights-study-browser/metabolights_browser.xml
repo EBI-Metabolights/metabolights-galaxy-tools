@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<tool name="MetaboLights Study Test Browser" id="metabolights_test_browser" tool_type="data_source" version="0.1.0">
+<tool name="MetaboLights Study Browser" id="metabolights_browser" tool_type="data_source" version="0.1.0">
     <command detect_errors="exit_code"><![CDATA[
 #if $download_rawfiles == 'true'
     wget ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/*
@@ -7,10 +7,10 @@
     wget ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/i_*.txt ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/s_*.txt ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/a_*.txt ftp://ftp.ebi.ac.uk/pub/databases/metabolights/studies/public/'$study_id'/m_*.t*
 #end if
 ]]></command>
-    <inputs action="https://wwwdev.ebi.ac.uk/metabolights/studies" check_values="false" method="get">
+    <inputs action="https://www.ebi.ac.uk/metabolights/studies" check_values="false" method="get">
         <display>Go to MetaboLights Study Browser $GALAXY_URL</display>
         <param name="GALAXY_URL" type="baseurl" value="/tool_runner" />
-        <param name="tool_id" type="hidden" value="metabolights_test_browser" />
+        <param name="tool_id" type="hidden" value="metabolights_browser" />
         <param name="sendToGalaxy" type="hidden" value="1" />
     </inputs>
     <request_param_translation>

@@ -1,4 +1,4 @@
-<tool id="metabolights_test_importer" name="MetaboLights Study Test Importer" version="0.1.0">
+<tool id="metabolights_importer" name="MetaboLights Study Importer" version="0.1.0">
     <command detect_errors="exit_code"><![CDATA[
 #if $aspera_download.use_aspera == 'true'
     #if $aspera_download.aspera_password
