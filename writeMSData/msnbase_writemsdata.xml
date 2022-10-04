@@ -12,17 +12,10 @@
     <expand macro="stdio"/>
 
     <command>
-        
-        <!--rough scaffolding   
-            #if input is of type .RData:
-                #if file is symlink:
-                    get symlink as path
-                    
 
-        -->
         <![CDATA[
-        @COMMAND_RSCRIPT@/msnbase_writemsdata.r
-        #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
+        @COMMAND_RSCRIPT@/msnbase_writemsdata.r 
+        #if $input.is_of_type(".raw") or $input.is_of_type(".RData") or $input.is_of_type(".rdata.msnbase.raw"):
             #if $os.path.islink(str($input))
                 #set $source = $os.readlink(str($input))
                 singlefile_galaxyPath '$source' singlefile_sampleName '$os.path.basename($source)'
@@ -30,10 +23,11 @@
                 singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
             #end if
         #else
-            zipfile '$input'
+            
         #end if
-        @COMMAND_LOG_EXIT@
-    ]]></command>
+        @COMMAND_LOG_EXIT@        
+        ]]>
+      </command>
     <inputs>
         
     </inputs>
