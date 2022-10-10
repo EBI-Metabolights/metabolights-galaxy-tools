@@ -1,4 +1,4 @@
-<tool id="msnbase_writemsdata" name="MSnbase readMSData" version="@Wrapper_VERSION@+galaxy0">
+<tool id="msnbase_writemsdata" name="MSnbase writeMSData" version="@WRAPPER_VERSION@+galaxy0">
     <description>Exports mass spectrometry files</description>
     <requirements>
         <requirement type="package" version="2.16.1">bioconductor-msnbase</requirement>
@@ -11,11 +11,10 @@
 
     <expand macro="stdio"/>
 
-    <command>
+    <command><![CDATA[
+        LC_ALL=C Rscript $__tool_directory__/msnbase_writemsdata.r 
 
-        <![CDATA[
-        @COMMAND_RSCRIPT@/msnbase_writemsdata.r 
-        #if $input.is_of_type(".raw") or $input.is_of_type(".RData") or $input.is_of_type(".rdata.msnbase.raw"):
+        #if $input.is_of_type("raw") or $input.is_of_type("RData") or $input.is_of_type("rdata.msnbase.raw"):
             #if $os.path.islink(str($input))
                 #set $source = $os.readlink(str($input))
                 singlefile_galaxyPath '$source' singlefile_sampleName '$os.path.basename($source)'
@@ -23,9 +22,12 @@
                 singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
             #end if
         #else
-            
+            singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
         #end if
-        @COMMAND_LOG_EXIT@        
+        ;
+        return=\$?;
+        cat 'log.txt';
+        sh -c "exit \$return"       
         ]]>
       </command>
     <inputs>
@@ -33,7 +35,7 @@
     </inputs>
     <outputs>
         <!--Really need a conditional here to allow for either mzML or mzXML. -->
-        <data name="mzML" format="mzML,mzXML" label="${input.name.rsplit('.',1)[0]}.mzML" />
+        <data name="mzML" format="mzML" label="${input.name.rsplit('.',1)[0]}.mzML" from_work_dir="writeMSData.mzml"/>
     </outputs>
     <help>
         <![CDATA[
