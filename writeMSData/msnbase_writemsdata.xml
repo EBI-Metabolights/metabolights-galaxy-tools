@@ -1,4 +1,4 @@
-<tool id="msnbase_writemsdata" name="MSnbase readMSData" version="@Wrapper_VERSION@+galaxy0">
+<tool id="msnbase_writemsdata" name="MSnbase writeMSData" version="@WRAPPER_VERSION@+galaxy0">
     <description>Exports mass spectrometry files</description>
     <requirements>
         <requirement type="package" version="2.16.1">bioconductor-msnbase</requirement>
@@ -11,18 +11,10 @@
 
     <expand macro="stdio"/>
 
-    <command>
-        
-        <!--rough scaffolding   
-            #if input is of type .RData:
-                #if file is symlink:
-                    get symlink as path
-                    
+    <command><![CDATA[
+        LC_ALL=C Rscript $__tool_directory__/msnbase_writemsdata.r 
 
-        -->
-        <![CDATA[
-        @COMMAND_RSCRIPT@/msnbase_writemsdata.r
-        #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
+        #if $input.is_of_type("raw") or $input.is_of_type("RData") or $input.is_of_type("rdata.msnbase.raw"):
             #if $os.path.islink(str($input))
                 #set $source = $os.readlink(str($input))
                 singlefile_galaxyPath '$source' singlefile_sampleName '$os.path.basename($source)'
@@ -30,17 +22,45 @@
                 singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
             #end if
         #else
-            zipfile '$input'
+            singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
         #end if
-        @COMMAND_LOG_EXIT@
-    ]]></command>
+        ;
+        return=\$?;
+        cat 'log.txt';
+        sh -c "exit \$return"       
+        ]]>
+      </command>
     <inputs>
-        
+        <param name="input" type="data" format=".raw,.Rdata.rdata.msnbase.raw,raw,rdata" label="File(s) from your history containing your chromatograms" help="Single file mode for the following formats: .raw or .Rdata. . See the help section below." />
     </inputs>
     <outputs>
-
+        <!--Really need a conditional here to allow for either mzML or mzXML. -->
+        <data name="mzML" format="mzML" label="${input.name.rsplit('.',1)[0]}.mzML" from_work_dir="writeMSData.mzml"/>
     </outputs>
     <help>
+        <![CDATA[
+            
+            ==================
+            MSnbase writeMSData
+            ==================
+            -----------
+            Description
+            -----------
+            The writeMSData,MSnExp and writeMSData,OnDiskMSnExp saves the content of a MSnExp or 
+            OnDiskMSnExp object to MS file(s) in either mzML or mzXML format.
 
+            The writeMSData method uses the proteowizard libraries through the mzR package to 
+            save the MS data. The data can be written to mzML or mzXML files with or without
+             copying additional metadata information from the original files from which the 
+             data was read by the readMSData() function. This can be set using the copy parameter. 
+             Note that copy = TRUE requires the original files to be available and is not 
+             supported for input files in other than mzML or mzXML format. All metadata 
+             related to the run is copied, such as instrument information, data processings
+              etc. If copy = FALSE only processing information performed in R 
+              (using MSnbase) are saved to the mzML file.
+
+            Currently only spectrum data is supported, i.e. if the original mzML file 
+            contains also chromatogram data it is not copied/saved to the new mzML file.
+        ]]>
     </help>
 </tool>

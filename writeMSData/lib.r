@@ -431,7 +431,7 @@ retrieveRawfileInTheWorkingDir <- function(singlefile, zipfile, args, prefix = "
 
 }
 
-retrieveSingleFileInWorkingDir <- function(singlefile, args, prefix) {
+retrieveSingleFileInWorkingDir <- function(singlefile, args, prefix = "") {
     # single - if the file are passed in the command arguments -> refresh singlefile
     if (!is.null(args[[paste0("singlefile_galaxyPath", prefix)]])) {
       singlefile_galaxyPaths <- unlist(strsplit(args[[paste0("singlefile_galaxyPath", prefix)]], "\\|"))
@@ -463,7 +463,7 @@ retrieveSingleFileInWorkingDir <- function(singlefile, args, prefix) {
         }
     }
 
-    return(list(zipfile = zipfile, singlefile = singlefile, files = files))
+    return(list(zipfile = NULL, singlefile = singlefile, files = files))
 }
 
 
