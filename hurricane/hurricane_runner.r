@@ -26,4 +26,14 @@ write.table(as.matrix(args), col.names = F, quote = F, sep = "\t")
 cat("\n\n")
 print(args)
 cat("\n\n")
-cat("hit final line")
+cat("install of ImperialNMRTool complete")
+
+# -----CONSTRUCT PARAMS OBJECT ----
+# probably move this out into utils.r once it is working.
+params_obj <- createYamlObj(args)
+
+
+# -----MAIN PROCESSING -----
+cat("\n\n")
+cat("Running workflow\n")
+ImperialNMRTool::hurricane(params_obj=params_obj)
