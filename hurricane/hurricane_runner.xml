@@ -18,7 +18,7 @@
     LC_ALL=C Rscript $__tool_directory__/hurricane_runner.r
     peaks_loc '$peaks_location'
     spec_loc '$spec_location'
-    output_dir '$__tool_directory__'
+    output_dir ''
     cutoff $cutoff
     rank_limit $rank_limit
     dist_thresh $distance_threshold
@@ -55,12 +55,12 @@
 
     </inputs>
     <outputs>
-        <!--<data name="target" format=".RDS" label="${input.name.rsplit('.',1)[0]}_target.rds" from_work_dir="target.RDS"/>
-    <data name="picked_peaks" format=".RDS" label="${input.name.rsplit('.',1)[0]}_picked_peaks.rds" from_work_dir="ppeaks.RDS"/>
-    <data name="target_list" format=".tsv" label="${input.name.rsplit('.',1)[0]}_target_list.tsv" from_work_dir="targetList.tsv"/>
-    <data name="match_pairs" format=".tsv" label="${input.name.rsplit('.',1)[0]}_match_pairs.tsv" from_work_dir="matchPairs.tsv"/>
-    <data name="reference_list" format=".tsv" label="${input.name.rsplit('.',1)[0]}_reference_list.tsv" from_work_dir="referenceList.tsv"/>
-    -->
+        <data name="target" format=".RDS" label="${peaks_location.name.rsplit('.',1)[0]}_target.rds" from_work_dir="target.RDS"/>
+    <data name="picked_peaks" format=".RDS" label="${peaks_location.name.rsplit('.',1)[0]}_picked_peaks.rds" from_work_dir="ppeaks.RDS"/>
+    <data name="target_list" format=".tsv" label="${peaks_location.name.rsplit('.',1)[0]}_target_list.tsv" from_work_dir="targetList.tsv"/>
+    <data name="match_pairs" format=".tsv" label="${peaks_location.name.rsplit('.',1)[0]}_match_pairs.tsv" from_work_dir="matchPairs.tsv"/>
+    <data name="reference_list" format=".tsv" label="${peaks_location.name.rsplit('.',1)[0]}_reference_list.tsv" from_work_dir="referenceList.tsv"/>
+    
     </outputs>
     <help>
         <![CDATA[
