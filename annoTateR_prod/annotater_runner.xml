@@ -1,0 +1,82 @@
+<tool id='annotater_nmr' name="annoTateR NMR pipeline" version="0.1.0+galaxy0">
+    <requirements>
+        <requirement type="package" version="2.4.4">r-devtools</requirement>
+        <requirement type="package" version="1.8.7">r-plyr</requirement>
+    </requirements>
+    <macros>
+        <imports>macros.xml</imports>
+    </macros>
+
+    <expand macro="stdio" />
+    <command>
+        <![CDATA[
+        LC_ALL=C Rscript $__tool_directory__/annotater_runner.r
+        dirs.temp ''
+        dirs.lib ''
+        study.id '$study_id'
+        study.spetrometer.frequency '$spectrometer_frequency'
+        files.spectral.matrix '$spectral_matrix'
+        corrpockets.half.window '$half_window'
+        corrpockets.noise.percentile '$noise_percentile'
+        corrpockets.only.region.between 'NULL'
+        corrpockets.rcutoff '$corrpockets_r_cutoff'
+        storm.correlation.r.cutoff '$storm_r_cutoff'
+        storm.q '0.1'
+        storm.b '$storm_b'
+        storm.number.of.plots '250'
+        tina.bounds '!expr c(-1, 11)'
+        tina.min.subset '5'
+        tina.prom.ratio '0.3'
+        tina.max.eps '$max_eps'
+        tina.minPts '$min_pts'
+        tina.max.plots '600'
+        tina.nfeats '15000'
+        matching.ref.sig.SD.cutoff '0.01'
+        matching.max.hits '5'
+        matching.r.thresh '$matching_r_thresh'
+        matching.p.thresh '$matching_p_thresh'
+        matching.filtering.res.area.threshold '$res_area_threshold'
+        matching.filtering.ppm.tol '$ppm_tol'
+        par.cores '3'
+        par.type 'FORK'
+        galaxy.enabled 'TRUE'
+        debug.enabled '$debug_enabled'
+        debug.throttle_matches '$throttle_matches'
+        ;
+        return=\$?;
+        cat 'log.txt';
+        sh -c "exit \$return" 
+        ]]>
+    </command>
+    <inputs>
+        <section name="study_params" title="Study" help="Params pertaining to which study to use" expanded="True">
+            <!--these will all be datatable driven studies -->
+        </section>
+        <section name="corr_pockets" title="Correlation Pockets" help="corrpock help here" expanded="True">
+            <param name="half_window" type="integer" label="Correlation Half Window" help="tbd" min="0" max="1000"/>
+            <param name="noise_percentile" type="float" label="Correlation Noise Percentile" help="tbd" min="0.01" max="1.0"/>
+            <param name="r_cutoff" type="float" label="Correlation r cutoff" help="tbd" min="0.01" max="1.0"/>
+        </section>
+        <section name="storm" title="STORM Parameters" help="tbd" expanded="True">
+            <param name="r_cutoff" type="float" label="STORM Correlation R Cutoff" help="tbd" min="0.01" max="1.0"/>
+            <param name="b" type="float" label="B param" help="tbd" min="0.01" max="5.0"/>
+        </section>
+        <section name="tina" title="TINA Parameters" help="tbd" expanded="True">
+            <param name="max_eps" type="integer" label="Max Eps" help="Parameter for OPTICS param search"  min="1" max="500"/>
+            <param name="min_pts" type="integer" label="Minimum Points" help="Minimu number of points for OPTICS" min="1" max="50"/>
+        </section>
+        <section name="matching" title="Matching Parameters" help="tbd" expanded="True">
+            <param name="r_thresh" type="float" label="R Threshold" help="pearson correlation coefficient (r) cutoff for cross-correlations" min="0.1" max="1.0" />
+            <param name="p_thresh" type="float" label="P Threshold" help="p-value cutoff for cross correlations" min="0.01" max="1.0"/>
+            <section name="filtering" title="Filtering Parameters" help="tbd" expanded="True">
+                <param name="res_area_threshold" type="float" label="Resolution Area Threshold" help="tbd" min="0.01" max="1.00"/>
+                <param name="pmm_tol" type="float" label="Parts Per Million Tolerance" help="tbd" min="0.01" max="10.0"/>
+            </section>
+
+        </section>
+        <section name='debug' title="Debug Parameters" help="parameters to help debug the tool" expanded="False">
+            <param name="enabled" type="boolean" label="Enabled" help="Enable the debug mode." />
+            <param name="throttle_matches" type="integer" label="Throttle Matches" help="Specify the number of matches to throttle." min="5" max="400" />
+        </section>
+    </inputs>
+</tool>
