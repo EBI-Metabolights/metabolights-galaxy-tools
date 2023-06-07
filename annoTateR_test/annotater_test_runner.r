@@ -18,7 +18,7 @@ pkgs <- c("devtools")
 loadAndDisplayPackages(pkgs)
 
 cat("\n\n");
-devtools::install_github("EBI-Metabolights/icl_nmr_R@v2")
+devtools::install_github("EBI-Metabolights/icl_nmr_R@v2.0.2.roxy")
 
 # ----- ARGUMENTS -----
 cat("\tARGUMENTS INFO\n")
@@ -30,10 +30,10 @@ cat("\n\n")
 cat("install of ImperialNMRTool complete")
 
 # -----CONSTRUCT PARAMS OBJECT ----
-params_obj <- create_yaml_obj_v2(args)
+params_obj <- createTestYamlObj(args)
 
 
 # -----MAIN PROCESSING -----
 cat("\n\n")
 cat("Running workflow\n")
-ImperialNMRTool::hurricane(params_obj=params_obj)
+ImperialNMRTool::pipeline(params_obj=params_obj)

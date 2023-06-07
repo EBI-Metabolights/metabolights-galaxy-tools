@@ -1,13 +1,14 @@
-<tool id='annotater_nmr' name="annoTateR NMR pipeline" version="0.1.0+galaxy0">
+<tool id="annotater_nmr_test" name="annoTateR NMR pipeline" version="0.1.0+galaxy0">
+    <description>
+        Workflows for automatic processing and annotation of 1D 1H-NMR spectra from MetaboLights repository.    
+        </description>
     <requirements>
         <requirement type="package" version="2.4.4">r-devtools</requirement>
         <requirement type="package" version="1.8.7">r-plyr</requirement>
     </requirements>
-    <macros>
-        <imports>macros.xml</imports>
-    </macros>
-
-    <expand macro="stdio" />
+    <stdio>
+        <exit_code range="1" level="fatal" />
+    </stdio>
     <command>
         <![CDATA[
         LC_ALL=C Rscript $__tool_directory__/annotater_runner.r
@@ -23,12 +24,55 @@
     <inputs>
         <section name="study_params" title="Study" help="Params pertaining to which study to use" expanded="True">
             <!--STILL NEED TO MAKE THE CHANGE IN PIPELINE TO REFER TO THE SPECIFIC GISSMO SLICE!!!!!! -->
-            <param name="gissmo_ref" type="data" label="Gissmo Slice" data_ref="e27d6b080c4f7867" help="Select a gissmo slice from the 'Gissmo ref files' data library." />
+            <param name="gissmo_ref" type="library_data" label="Gissmo Slice" data_ref="e27d6b080c4f7867" help="Select a gissmo slice from the Gissmo ref files data library." />
             <!--STILL NEED TO MAKE THE CHANGE IN PIPELINE TO REFER TO THE SPECIFIC GISSMO SLICE!!!!!! -->
-            <param name="spectral_matrix" type="data" label="Input Dataset" data_ref="28747fb6b1b59dd4" help="Select an input spectral matrix from the 'MTBLS Spectral Matrices' data library." />
-            <param name="config_yaml" type="upload" label="Upload YAML File" format="yaml" help="Upload a YAML file containing the required configuration." />
+            <param name="spectral_matrix" type="library_data" label="Input Spectral Matrix" data_ref="28747fb6b1b59dd4" help="Select an input spectral matrix from the MTBLS Spectral Matrices data library." />
+            <param name="config_yaml" type="file" label="Select YAML File" format="file" help="Select a YAML file containing the required configuration." />
 
         </section>
 
     </inputs>
+    <outputs>
+        <data name="lib.info" format=".RDS" label="${spectral_matrix.name.rsplit('.', 1)[0]}_lib.info.RDS" from_work_dir="lib.info.RDS"/>
+        <data name="fse_features.pdf" format=".pdf" label="${spectral_matrix.name.rsplit('.', 1)[0]}_fse_features.pdf" from_work_dir="fse_features.pdf"/> 
+        <data name="corrpeak_distribution.pdf" format=".pdf" label="${spectral_matrix.name.rsplit('.', 1)[0]}_corrpeak_distribution.pdf" from_work_dir="corrpeak_distribution.pdf"/>
+        <data name="fse.result" format=".RDS" label="${spectral_matrix.name.rsplit('.', 1)[0]}_fse_result.RDS" from_work_dir="fse.result.RDS"/>
+        <data name="filtered.features" format=".pdf" label="${spectral_matrix.name.rsplit('.', 1)[0]}_filtered_features.pdf" from_work_dir="filtered.features.pdf"/>
+        <data name="feature.ranges" format=".pdf" label="${spectral_matrix.name.rsplit('.', 1)[0]}_feature_ranges.pdf" from_work_dir="feature.ranges.pdf"/>
+        <data name="optics.opt.epsvalue" format=".pdf" label="${spectral_matrix.name.rsplit('.', 1)[0]}_optics_opt_epsvalue.pdf" from_work_dir="optics.opt.epsvalue"/>
+        <data name="optics.cluster.sizeDistribution" format=".pdf" label="${spectral_matrix.name.rsplit('.', 1)[0]}_optics_cluster_size_distribution.pdf" from_work_dir="optics.cluster.sizeDistribution.pdf"/>
+        <data name="feature_clusters" format=".pdf" label="${spectral_matrix.name.rsplit('.', 1)[0]}_feature_clusters.pdf" from_work_dir="feature_clusters.pdf"/>
+        <data name="checked.clusters" format=".pdf" label="${spectral_matrix.name.rsplit('.', 1)[0]}_checked_clusters.pdf" from_work_dir="checked.cluster.pdf"/>
+        <data name="lib.data.processed" format=".RDS" label="${spectral_matrix.name.rsplit('.', 1)[0]}_lib_data_processed.RDS" from_work_dir="lib.data.processed.RDS"/>
+        <data name="match_scores_sample_x_compound.pdf" label="${spectral_matrix.name.rsplit('.', 1)[0]}_match_scores_sample_x_compound.pdf" from_work_dir="match_scores_sample_x_compound.pdf"/>
+        <data name="ss.ref.sumScores" format=".RDS" label="${spectral_matrix.name.rsplit('.', 1)[0]}_ss_ref_sum_scores.RDS" from_work_dir="ss.ref.sumScores.RDS"/>
+        <data name="rfs.used" format=".RDS" label="${spectral_matrix.name.rsplit('.', 1)[0]}_rfs_used.RDS" from_work_dir="rfs.used.RDS"/>
+        <data name="backfit.results" format=".RDS" label="${spectral_matrix.name.rsplit('.', 1)[0]}_backfit_results.RDS" from_work_dir="backfit.results.RDS"/>
+        
+    </outputs>
+    <help>
+        <![CDATA[
+            
+    help shmelp
+
+    list of outputs;
+    lib.info.RDS
+fse_features.pdf
+corrpeak_distribution.pdf
+fse.result.RDS
+filtered.features.pdf
+feature.ranges.pdf
+optics.opt.epsvalue.pdf
+optics.clusters.sizeDistribution.pdf
+feature_clusters.pdf
+checked.clusters.pdf
+lib.data.processed.RDS
+match_scores_sample_x_compound.pdf
+ss.ref.sumScores.RDS
+rfs.used.RDS
+backfit.results.RDS
+params.yaml
+
+]]>
+    </help>
 </tool>
