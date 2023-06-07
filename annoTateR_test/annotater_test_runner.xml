@@ -13,7 +13,7 @@
         <![CDATA[
         LC_ALL=C Rscript $__tool_directory__/annotater_runner.r
         params_file '$study_params.config_yaml'
-        matrix '$study_params.matrix'
+        matrix '$study_params.spectral_matrix'
         gissmo_ref '$study_params.gissmo_ref'
         ;
         return=\$?;
@@ -48,7 +48,7 @@
         <data name="ss.ref.sumScores" format=".RDS" label="${spectral_matrix.name.rsplit('.', 1)[0]}_ss_ref_sum_scores.RDS" from_work_dir="ss.ref.sumScores.RDS"/>
         <data name="rfs.used" format=".RDS" label="${spectral_matrix.name.rsplit('.', 1)[0]}_rfs_used.RDS" from_work_dir="rfs.used.RDS"/>
         <data name="backfit.results" format=".RDS" label="${spectral_matrix.name.rsplit('.', 1)[0]}_backfit_results.RDS" from_work_dir="backfit.results.RDS"/>
-        
+
     </outputs>
     <help>
         <![CDATA[
